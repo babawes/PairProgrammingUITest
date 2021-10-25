@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System.Collections.ObjectModel;
 
 namespace PairProgrammingUITest
 {
@@ -8,7 +9,7 @@ namespace PairProgrammingUITest
     public class UITest
     {
         private IWebDriver _driver;
-        private string url = "file:///C:/Users/babaw/OneDrive/Skrivebord/Sem.%203/PairProgramming/PairProgrammingWebpage/index.html";
+        private string url = "file:///C:/Users/aksel/OneDrive%20-%20Zealand%20Sj%C3%A6llands%20Erhvervsakademi/Interdisciplinary%20Assignments/Tredje%20semester/PairProgramming/Webpage/index.html";
 
         [TestMethod]
         public void ShowAllTest()
@@ -16,8 +17,10 @@ namespace PairProgrammingUITest
             _driver = new ChromeDriver();
             _driver.Navigate().GoToUrl(url);
             _driver.FindElement(By.Id("showallbutton")).Click();
-            string listText = _driver.FindElement(By.Id("allrecords")).Text;
-            Assert.IsFalse(string.IsNullOrEmpty(listText));
+            IWebElement unlist = _driver.FindElement(By.Id("allrecords"));
+            ReadOnlyCollection<IWebElement> children = unlist.FindElements(By.Name("r"));
+
+            Assert.IsTrue(children.Count > 0);
         }
     }
 }
