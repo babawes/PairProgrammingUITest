@@ -31,5 +31,51 @@ namespace PairProgrammingUITest
                 Assert.IsTrue(children.Count > 0);
             }
         }
+        [TestMethod]
+        public void ShowByTitleTest()
+        {
+            using (_driver = new ChromeDriver())
+            {
+
+                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+                _driver.Navigate().GoToUrl(url);
+                _driver.FindElement(By.Id("titleinput")).SendKeys("a");
+                _driver.FindElement(By.Id("showbytitlebutton")).Click();
+
+                wait.Until(webDriver => webDriver.FindElement(By.Name("tr")).Displayed);
+
+                
+                
+
+                Assert.IsTrue(true);
+            }
+        }
+
+        [TestMethod]
+        public void ShowByArtistTest()
+        {
+            
+        }
+
+        [TestMethod]
+        public void ShowByGenreTest()
+        {
+            using (_driver = new ChromeDriver())
+            {
+
+                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+                _driver.Navigate().GoToUrl(url);
+                _driver.FindElement(By.Id("showallbutton")).Click();
+
+                wait.Until(webDriver => webDriver.FindElement(By.CssSelector("li")).Displayed);
+
+                IWebElement unlist = _driver.FindElement(By.Id("allrecords"));
+                ReadOnlyCollection<IWebElement> children = unlist.FindElements(By.Name("r"));
+
+                Assert.IsTrue(children.Count > 0);
+            }
+        }
     }
 }
