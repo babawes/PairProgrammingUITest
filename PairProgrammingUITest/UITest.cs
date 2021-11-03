@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.ObjectModel;
@@ -111,6 +112,62 @@ namespace PairProgrammingUITest
                 int newNrOfRecords = _driver.FindElements(By.CssSelector("li")).Count;
 
                 Assert.AreEqual(oldNrOfRecords+1, newNrOfRecords);
+            }
+        }
+
+        [TestMethod]
+        public void DeleteMusicRecordTest() {
+            using (_driver = new ChromeDriver()) {
+
+                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
+
+                _driver.Navigate().GoToUrl(url);
+                _driver.FindElement(By.Id("showallbutton")).Click();
+
+                wait.Until(webDriver => webDriver.FindElement(By.CssSelector("li")).Displayed);
+
+                int oldNrOfRecords = _driver.FindElements(By.CssSelector("li")).Count;
+
+                _driver.FindElement(By.Id("titleaddinput")).SendKeys("title");
+                _driver.FindElement(By.Id("artistaddinput")).SendKeys("artist");
+                _driver.FindElement(By.Id("durationaddinput")).SendKeys("90");
+                _driver.FindElement(By.Id("yearaddinput")).SendKeys("2000");
+                _driver.FindElement(By.Id("genreaddinput")).SendKeys("genre");
+
+                _driver.FindElement(By.Id("addbutton")).Click();
+
+                DateTime startAdd = System.DateTime.Now;
+                wait.Until(webDriver => {
+                    if (System.DateTime.Now > startAdd.AddSeconds(1)) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                _driver.FindElement(By.Id("titledeleteinput")).SendKeys("title");
+                _driver.FindElement(By.Id("artistdeleteinput")).SendKeys("artist");
+                _driver.FindElement(By.Id("durationdeleteinput")).SendKeys("90");
+                _driver.FindElement(By.Id("yeardeleteinput")).SendKeys("2000");
+                _driver.FindElement(By.Id("genredeleteinput")).SendKeys("genre");
+
+                _driver.FindElement(By.Id("deletebutton")).Click();
+
+                DateTime startDelete = System.DateTime.Now;
+                wait.Until(webDriver => {
+                    if (System.DateTime.Now > startDelete.AddSeconds(1)) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                _driver.Navigate().GoToUrl(url);
+                _driver.FindElement(By.Id("showallbutton")).Click();
+
+                wait.Until(webDriver => webDriver.FindElement(By.CssSelector("li")).Displayed);
+
+                int newNrOfRecords = _driver.FindElements(By.CssSelector("li")).Count;
+
+                Assert.AreEqual(oldNrOfRecords, newNrOfRecords);
             }
         }
     }
