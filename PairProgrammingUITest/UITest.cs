@@ -43,38 +43,74 @@ namespace PairProgrammingUITest
                 _driver.FindElement(By.Id("titleinput")).SendKeys("a");
                 _driver.FindElement(By.Id("showbytitlebutton")).Click();
 
-                wait.Until(webDriver => webDriver.FindElement(By.Name("tr")).Displayed);
-
-                
-                
-
-                Assert.IsTrue(true);
+                Assert.IsTrue(wait.Until(webDriver => webDriver.FindElement(By.Name("tr")).Displayed));
             }
         }
 
         [TestMethod]
-        public void ShowByArtistTest()
-        {
-            
+        public void ShowByArtistTest() {
+            using (_driver = new ChromeDriver()) {
+
+                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+
+                _driver.Navigate().GoToUrl(url);
+                _driver.FindElement(By.Id("artistinput")).SendKeys("a");
+                _driver.FindElement(By.Id("showbyartistbutton")).Click();
+
+                Assert.IsTrue(wait.Until(webDriver => webDriver.FindElement(By.Name("ar")).Displayed));
+            }
         }
 
         [TestMethod]
-        public void ShowByGenreTest()
-        {
-            using (_driver = new ChromeDriver())
-            {
+        public void ShowByGenreTest() {
+            using (_driver = new ChromeDriver()) {
 
-                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
+
+                _driver.Navigate().GoToUrl(url);
+                _driver.FindElement(By.Id("genreinput")).SendKeys("p");
+                _driver.FindElement(By.Id("showbygenrebutton")).Click();
+
+                Assert.IsTrue(wait.Until(webDriver => webDriver.FindElement(By.Name("gr")).Displayed));
+            }
+        }
+        [TestMethod]
+        public void AddMusicRecordTest() {
+            using (_driver = new ChromeDriver()) {
+
+                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
 
                 _driver.Navigate().GoToUrl(url);
                 _driver.FindElement(By.Id("showallbutton")).Click();
 
                 wait.Until(webDriver => webDriver.FindElement(By.CssSelector("li")).Displayed);
 
-                IWebElement unlist = _driver.FindElement(By.Id("allrecords"));
-                ReadOnlyCollection<IWebElement> children = unlist.FindElements(By.Name("r"));
+                int oldNrOfRecords = _driver.FindElements(By.CssSelector("li")).Count;
 
-                Assert.IsTrue(children.Count > 0);
+                _driver.FindElement(By.Id("titleaddinput")).SendKeys("title");
+                _driver.FindElement(By.Id("artistaddinput")).SendKeys("artist");
+                _driver.FindElement(By.Id("durationaddinput")).SendKeys("90");
+                _driver.FindElement(By.Id("yearaddinput")).SendKeys("2000");
+                _driver.FindElement(By.Id("genreaddinput")).SendKeys("genre");
+
+                _driver.FindElement(By.Id("addbutton")).Click();
+
+                DateTime start = System.DateTime.Now;
+                wait.Until(webDriver => {
+                    if(System.DateTime.Now > start.AddSeconds(1)) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                _driver.Navigate().GoToUrl(url);
+                _driver.FindElement(By.Id("showallbutton")).Click();
+
+                wait.Until(webDriver => webDriver.FindElement(By.CssSelector("li")).Displayed);
+
+                int newNrOfRecords = _driver.FindElements(By.CssSelector("li")).Count;
+
+                Assert.AreEqual(oldNrOfRecords+1, newNrOfRecords);
             }
         }
     }
