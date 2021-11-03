@@ -170,5 +170,65 @@ namespace PairProgrammingUITest
                 Assert.AreEqual(oldNrOfRecords, newNrOfRecords);
             }
         }
+
+        [TestMethod]
+        public void UpdateMusicRecordTest() {
+            using (_driver = new ChromeDriver()) {
+
+                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
+
+                _driver.Navigate().GoToUrl(url);
+
+                _driver.FindElement(By.Id("titleaddinput")).SendKeys("title");
+                _driver.FindElement(By.Id("artistaddinput")).SendKeys("artist");
+                _driver.FindElement(By.Id("durationaddinput")).SendKeys("90");
+                _driver.FindElement(By.Id("yearaddinput")).SendKeys("2000");
+                _driver.FindElement(By.Id("genreaddinput")).SendKeys("genre");
+
+                _driver.FindElement(By.Id("addbutton")).Click();
+
+                DateTime startAdd = System.DateTime.Now;
+                wait.Until(webDriver => {
+                    if (System.DateTime.Now > startAdd.AddSeconds(1)) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                _driver.Navigate().GoToUrl(url);
+
+                _driver.FindElement(By.Id("titledeleteinput")).SendKeys("title");
+                _driver.FindElement(By.Id("artistdeleteinput")).SendKeys("artist");
+                _driver.FindElement(By.Id("durationdeleteinput")).SendKeys("90");
+                _driver.FindElement(By.Id("yeardeleteinput")).SendKeys("2000");
+                _driver.FindElement(By.Id("genredeleteinput")).SendKeys("genre");
+
+                _driver.FindElement(By.Id("titleaddinput")).SendKeys("money");
+                _driver.FindElement(By.Id("artistaddinput")).SendKeys("money");
+                _driver.FindElement(By.Id("durationaddinput")).SendKeys("999");
+                _driver.FindElement(By.Id("yearaddinput")).SendKeys("999");
+                _driver.FindElement(By.Id("genreaddinput")).SendKeys("money");
+
+                _driver.FindElement(By.Id("updatebutton")).Click();
+
+                DateTime startUpdate = System.DateTime.Now;
+                wait.Until(webDriver => {
+                    if (System.DateTime.Now > startUpdate.AddSeconds(1)) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                _driver.Navigate().GoToUrl(url);
+                _driver.FindElement(By.Id("showallbutton")).Click();
+
+                wait.Until(webDriver => webDriver.FindElement(By.CssSelector("li")).Displayed);
+
+                ReadOnlyCollection<IWebElement> elements = _driver.FindElements(By.CssSelector("li"));
+                IWebElement shouldBeSomething = elements[elements.Count - 1];
+
+                Assert.AreEqual("money, money, 999, 999, money", shouldBeSomething.Text);
+            }
+        }
     }
 }
